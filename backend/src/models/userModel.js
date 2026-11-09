@@ -1,5 +1,5 @@
 const { DataTypes } = require("sequelize");
-const sequelize = require("../config/database"); // Certifique-se de que o caminho aponta para sua conexão do Sequelize
+const sequelize = require("./connection") // Certifique-se de que o caminho aponta para sua conexão do Sequelize
 const bcrypt = require("bcryptjs");
 
 const User = sequelize.define(

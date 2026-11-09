@@ -1,41 +1,34 @@
-require("dotenv").config(); // OBRIGATÓRIO: Sempre na primeira linha do arquivo de configuração
-const { Sequelize } = require("sequelize");
+require("dotenv").config();
 
-const sequelize = new Sequelize(
-  process.env.DB_NAME || "postgres", // Banco de dados
-  process.env.DB_USER || "postgres", // Usuário
-  process.env.DB_PASS || "admin", // Senha (ajustado para bater com o .env)
-  {
-    host: process.env.DB_HOST || "localhost",
-    port: process.env.DB_PORT || 5432,
-    dialect: "postgres", // Deixe o dialeto fixo como string para evitar erros do Sequelize
-    logging: false,
-    define: {
-      timestamps: true,
-      underscored: true,
-    },
+const config = {
+  username: process.env.DB_USER || "postgres",
+  password: process.env.DB_PASS || "admin",
+  database: process.env.DB_NAME || "postgres",
+  host: process.env.DB_HOST || "localhost",
+  port: process.env.DB_PORT || 5432,
+  dialect: "postgres",
+  logging: false,
+  define: {
+    timestamps: true,
+    underscored: true,
   },
-);
+  // Configuração obrigatória para o banco de dados em produção no Render
+  dialectOptions: process.env.NODE_ENV === "production" ? {
+    ssl: {
+      require: true,
+      rejectUnauthorized: false
+    }
+  } : {}
+};
 
-module.exports = sequelize;
+// Se houver uma URL completa fornecida pelo Render, o CLI pode usá-la em produção
+if (process.env.DATABASE_URL && process.env.NODE_ENV === "production") {
+  config.url = process.env.DATABASE_URL;
+}
 
-/*const { Sequelize } = require('sequelize');
-
-// ATENÇÃO: Substitua as strings abaixo pelos seus dados reais do pgAdmin
-const sequelize = new Sequelize(
-  'postgres',          // Nome do banco de dados (deixe postgres que já existe)
-  'postgres',          // Usuário padrão
-  'postgres',    // DIGITE SUA SENHA REAL AQUI ENTRE AS ASPAS
-  {
-    host: 'localhost',
-    port: 5432,
-    dialect: 'postgres',
-    logging: false,
-    define: {
-      timestamps: true,
-      underscored: true,
-    },
-  }
-);
-
-module.exports = sequelize;*/
+// Exportação compatível com o Sequelize CLI e com instâncias manuais
+module.exports = {
+  development: config,
+  production: config,
+  test: config
+};
