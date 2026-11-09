@@ -1,20 +1,20 @@
-require('dotenv').config(); // OBRIGATÓRIO: Sempre na primeira linha do arquivo de configuração
-const { Sequelize } = require('sequelize');
+require("dotenv").config(); // OBRIGATÓRIO: Sempre na primeira linha do arquivo de configuração
+const { Sequelize } = require("sequelize");
 
 const sequelize = new Sequelize(
-  process.env.DB_NAME || 'postgres',          // Banco de dados
-  process.env.DB_USER || 'postgres',          // Usuário
-  process.env.DB_PASS || 'admin',             // Senha (ajustado para bater com o .env)
+  process.env.DB_NAME || "postgres", // Banco de dados
+  process.env.DB_USER || "postgres", // Usuário
+  process.env.DB_PASS || "admin", // Senha (ajustado para bater com o .env)
   {
-    host: process.env.DB_HOST || 'localhost',
+    host: process.env.DB_HOST || "localhost",
     port: process.env.DB_PORT || 5432,
-    dialect: 'postgres',                      // Deixe o dialeto fixo como string para evitar erros do Sequelize
+    dialect: "postgres", // Deixe o dialeto fixo como string para evitar erros do Sequelize
     logging: false,
     define: {
       timestamps: true,
       underscored: true,
     },
-  }
+  },
 );
 
 module.exports = sequelize;

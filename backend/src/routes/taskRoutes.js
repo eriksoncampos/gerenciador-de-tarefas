@@ -1,11 +1,16 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const taskController = require('../controllers/taskController');
+const taskController = require("../controllers/taskController");
+const protect = require("../middlewares/authMiddleware");
 
-router.get('/', taskController.getTasks);
-router.get('/:id', taskController.getTaskById);
-router.post('/', taskController.createTask);
-router.put('/:id', taskController.updateTask);
-router.delete('/:id', taskController.deleteTask);
+// Todas as rotas de tarefas são protegidas, exigindo autenticação
+router.use(protect);
+
+router.route("/").get(taskController.getTasks).post(taskController.createTask);
+router
+  .route("/:id")
+  .get(taskController.getTaskById)
+  .put(taskController.updateTask)
+  .delete(taskController.deleteTask);
 
 module.exports = router;

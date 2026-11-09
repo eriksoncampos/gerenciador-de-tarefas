@@ -1,26 +1,44 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 
 export default function TaskForm({ onTaskCreated }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [status, setStatus] = useState("Pendente");
   const [dueDate, setDueDate] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false); // Estado para evitar cliques duplicados
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    //Validação do formulário
-    if (!title) return alert("O título é obrigatório");
+    
+    // Validação básica de string vazia ou apenas espaços
+    if (!title.trim()) {
+      return alert("O título é obrigatório");
+    }
 
-    // Criação do objeto de tarefa
-    const newTask = { title, description, status, dueDate };
-    onTaskCreated(newTask);
+    try {
+      setIsSubmitting(true);
+      
+      // Criação do objeto de tarefa
+      const newTask = { 
+        title: title.trim(), 
+        description: description.trim(), 
+        status, 
+        dueDate: dueDate || null // Evita enviar string vazia para campos de data no banco
+      };
+      
+      // Aguarda a execução da requisição enviada pelo App.js
+      await onTaskCreated(newTask);
 
-    // Limpeza do formulário
-    setTitle("");
-    setDescription("");
-    setStatus("Pendente");
-    setDueDate("");
+      // Limpeza do formulário apenas se der certo
+      setTitle("");
+      setDescription("");
+      setStatus("Pendente");
+      setDueDate("");
+    } catch (error) {
+      console.error("Erro ao submeter formulário:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -42,6 +60,7 @@ export default function TaskForm({ onTaskCreated }) {
               placeholder="Digite o título da tarefa..."
               value={title}
               onChange={(e) => setTitle(e.target.value)}
+              disabled={isSubmitting}
             />
           </div>
 
@@ -59,6 +78,7 @@ export default function TaskForm({ onTaskCreated }) {
               placeholder="O que precisa ser feito?"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
+              disabled={isSubmitting}
             />
           </div>
 
@@ -75,9 +95,11 @@ export default function TaskForm({ onTaskCreated }) {
                 className="form-select"
                 value={status}
                 onChange={(e) => setStatus(e.target.value)}
+                disabled={isSubmitting}
               >
                 <option value="Pendente">⏳ Pendente</option>
-                <option value="Em Progresso">🚀 Em Progresso</option>
+                {/* Correção: Alterado de "Em Progresso" para "Em Andamento" para alinhar com o App.js */}
+                <option value="Em Andamento">🚀 Em Andamento</option>
                 <option value="Concluída">✅ Concluída</option>
               </select>
             </div>
@@ -95,6 +117,7 @@ export default function TaskForm({ onTaskCreated }) {
                 className="form-control"
                 value={dueDate}
                 onChange={(e) => setDueDate(e.target.value)}
+                disabled={isSubmitting}
               />
             </div>
           </div>
@@ -102,8 +125,9 @@ export default function TaskForm({ onTaskCreated }) {
           <button
             type="submit"
             className="btn btn-primary w-100 py-2 fw-bold mt-2 shadow-sm"
+            disabled={isSubmitting}
           >
-            Criar Tarefa
+            {isSubmitting ? "Criando..." : "Criar Tarefa"}
           </button>
         </form>
       </div>

@@ -1,0 +1,15 @@
+const path = require('path');
+
+module.exports = {
+  // Configuração da conexão com o banco de dados (OK)
+  'config': path.resolve('src', 'config', 'database.js'),
+  
+  // CORREÇÃO: Aponta para a pasta onde as migrations realmente serão lidas e criadas
+  'migrations-path': path.resolve('src', 'config', 'migrations'),
+  
+  // CORREÇÃO: Aponta para os seeders caso precise usá-los no futuro
+  'seeders-path': path.resolve('src', 'config', 'seeders'),
+  
+  // Modelos das tabelas (OK, mapeia direto para src/models)
+  'models-path': path.resolve('src', 'models')
+};
