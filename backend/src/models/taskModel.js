@@ -40,6 +40,7 @@ const Task = sequelize.define(
   {
     tableName: "tasks",
     timestamps: true,
+    underscored: true
   },
 );
 
