@@ -10,7 +10,7 @@ const config = {
   logging: false,
   define: {
     timestamps: true,
-    underscored: true,
+    underscored: false,
   },
   // Configuração obrigatória para o banco de dados em produção no Render
   dialectOptions: process.env.NODE_ENV === "production" ? {
