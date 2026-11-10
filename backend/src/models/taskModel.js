@@ -29,6 +29,7 @@ const Task = sequelize.define(
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false, // Defina como true temporariamente se já houver dados antigos no banco
+      field: "userId", // Força o Sequelize a usar exatamente "userId" no PostgreSQL
       references: {
         model: "users", // Nome da tabela de usuários
         key: "id",
